@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { GiScales } from "react-icons/gi";
 export default function Header() {
     return (
