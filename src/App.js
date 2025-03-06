@@ -21,8 +21,10 @@ class App extends React.Component {
       <div className="wrapper">
           <Header />
           <Elements elements={this.state.elements} choose={this.choose}/>
+          <button className="submit">Отправить</button>
           <Footer />
         </div>
+        
     );
   }
   choose(value, name){
