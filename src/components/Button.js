@@ -6,7 +6,6 @@ export class Button extends Component {
       <div className={this.props.className} onClick={() => this.props.choose()}>
         <div className='icon'><this.props.value/></div>
       </div>
-      
     )
   }
 }
