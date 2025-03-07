@@ -53,10 +53,9 @@ class App extends React.Component {
       <div className="wrapper">
           <Header />
           <Elements elements={this.state.elements} choose={this.choose}/>
-          <button onClick={this.submit}>Отправить</button>
+          <button className="submit" onClick={this.submit}>Отправить</button>
           <Footer />
-
-      </div>
+        </div>
     );
   }
   choose(value, name){
