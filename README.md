@@ -31,7 +31,7 @@
 | **Роль** | форма опроса гостя |
 | **Стек** | React (CRA), JavaScript, Fetch API, CSS |
 | **Backend** | [Shfdis/balance](https://github.com/Shfdis/balance) |
-| **Пара** | бизнес-панель — [frontend2](https://github.com/Ariabochkina/frontend2) |
+| **Пара** | бизнес-панель — [balance-business](https://github.com/Ariabochkina/balance-business) |
 
 ---
 
@@ -171,5 +171,4 @@ http://127.0.0.1:3000/?recipe_id=1&token=<token>
 ## Ссылки
 
 - Backend: [Shfdis/balance](https://github.com/Shfdis/balance)
-- Бизнес-панель: [Ariabochkina/frontend2](https://github.com/Ariabochkina/frontend2)
-- Демонстрация Balance: [Яндекс.Диск](https://disk.yandex.ru/i/mr6iN2WnrF1sFg)
+- Бизнес-панель: [Ariabochkina/balance-business](https://github.com/Ariabochkina/balance-business)
