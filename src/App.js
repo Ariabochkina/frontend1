@@ -23,7 +23,14 @@ class App extends React.Component {
   }
   loadData(){
     let params = new URL(document.location.toString()).searchParams;
-    let id = params.get("recipe_id").toString();
+    let id = params.get("recipe_id");
+    // Без recipe_id показываем демо-вкусы, чтобы можно было открыть UI локально
+    if (!id) {
+      this.setState({
+        elements: ["sweetness", "bitterness", "acidity", "saltiness"]
+      })
+      return
+    }
     fetch(this.state.APIUrl + "/tastes/" + id)
     .then(response => response.json())
     .then(data => {
@@ -32,14 +39,24 @@ class App extends React.Component {
       }
       this.setState({elements: data})
     })
+    .catch(() => {
+      this.setState({
+        elements: ["sweetness", "bitterness", "acidity", "saltiness"]
+      })
+    })
   }
   submit(){
     var result = {}
     for (var i = 0; i < this.state.elements.length; i++) {
-      result[this.state.elements[i]] = (container[i] / 20)
+      result[this.state.elements[i]] = ((container[i] || 0) / 20)
     }
     let params = new URL(document.location.toString()).searchParams;
-    let token = params.get("token").toString();
+    let token = params.get("token");
+    if (!token) {
+      console.log("Demo submit (нет token):", result)
+      alert("Демо-режим: ответы собраны, но token не передан.\n" + JSON.stringify(result, null, 2))
+      return
+    }
     fetch(this.state.APIUrl + "/submit/" + token, {
       method: "POST",
       body: JSON.stringify(result),

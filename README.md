@@ -1,28 +1,45 @@
-# Frontend1 (Survey Form) for Balance
+<div align="center">
 
-Веб-форма для клиента в проекте **Balance**: короткий опрос после покупки, где гость оценивает, насколько усилить или ослабить вкусовые характеристики продукта.
+# Balance Survey
 
-Этот репозиторий — клиентская часть к backend-проекту `balance`. После заполнения формы backend автоматически подстраивает персональный рецепт пользователя под собранные предпочтения.
+**Клиентская форма опроса для проекта Balance**  
+*Guest taste survey form for the Balance project*
 
-Связанные репозитории проекта `Balance`:
-- backend: [Shfdis/balance](https://github.com/Shfdis/balance)
-- frontend (бизнес-панель): [Ariabochkina/frontend2](https://github.com/Ariabochkina/frontend2)
-- frontend (форма опроса, этот репозиторий): `frontend1`
+<br/>
+
+Веб-форма · вкусовые шкалы · адаптация рецепта
+
+<br/>
+
+![React](https://img.shields.io/badge/React-CRA-61DAFB?style=flat-square&logo=react&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![Fetch API](https://img.shields.io/badge/API-Fetch-4CAF50?style=flat-square)
+![CSS](https://img.shields.io/badge/CSS-Montserrat-1572B6?style=flat-square&logo=css3&logoColor=white)
+
+</div>
 
 ---
 
-## О проекте Balance (контекст)
+## О проекте
 
-**Balance** — сервис автоматической адаптации рецептов еды и напитков под вкусы конкретного гостя.
+**Balance Survey** — веб-форма для гостя в проекте [Balance](https://github.com/Shfdis/balance): короткий опрос после покупки, где можно оценить, насколько усилить или ослабить вкусовые характеристики продукта.
 
-Идея: после каждой покупки клиент проходит короткую форму по вкусовым шкалам (сладость, солёность, горечь и т.д.). Ответы интерпретируются как «градиент» предпочтений, и персональный рецепт сдвигается в нужную сторону — к следующему заказу вкус уже ближе к ожиданиям гостя.
+После заполнения backend автоматически подстраивает персональный рецепт — к следующему заказу вкус уже ближе к предпочтениям гостя.
 
 | | |
 | --- | --- |
-| **Этот клиент** | форма опроса гостя (`frontend1`) |
-| **Бизнес-панель** | редактор рецептов и коэффициентов (`frontend2`) |
-| **Сервер** | Flask API + БД (`balance`) |
-| **Порт формы** | `3001` (в составе общего деплоя Balance) |
+| **Роль** | форма опроса гостя |
+| **Стек** | React (CRA), JavaScript, Fetch API, CSS |
+| **Backend** | [Shfdis/balance](https://github.com/Shfdis/balance) |
+| **Пара** | бизнес-панель — [frontend2](https://github.com/Ariabochkina/frontend2) |
+
+---
+
+## Скриншот
+
+<p align="center">
+  <img src="docs/screenshots/survey.png" alt="Форма опроса Balance Survey" width="420" />
+</p>
 
 ---
 
@@ -43,15 +60,15 @@
   ?recipe_id=...&token=...
         │
         ▼
-┌─────────────────────┐
-│  frontend1 (форма)  │
-└──────────┬──────────┘
+┌─────────────────────────┐
+│  balance-survey (форма) │
+└──────────┬──────────────┘
            │ GET /tastes/<recipe_id>
            │ POST /submit/<token>
            ▼
-┌─────────────────────┐
-│  balance (Flask)    │  изменяет персональный рецепт
-└─────────────────────┘
+┌─────────────────────────┐
+│  balance (Flask)        │  изменяет персональный рецепт
+└─────────────────────────┘
 ```
 
 Формат тела `POST /submit/<token>`:
@@ -118,37 +135,36 @@ src/
 
 ## Локальный запуск
 
+Нужны Node.js и npm.
+
 ### 1) Установить зависимости
 
 ```bash
-npm install
+npm install --legacy-peer-deps
 ```
 
-### 2) Запустить frontend
+(`--legacy-peer-deps` нужен из‑за React 19 и старых testing-библиотек в CRA.)
+
+### 2) Запустить форму
 
 ```bash
 npm start
 ```
 
-По умолчанию приложение откроется на `http://localhost:3000`.
+Откроется [http://127.0.0.1:3000](http://127.0.0.1:3000).
 
-### 3) Открыть форму с параметрами
+**Только посмотреть UI** — достаточно открыть этот адрес без параметров: форма покажет демо-вкусы, ответы при «Отправить» выведутся в alert (без backend).
 
-Для работы нужны `recipe_id` и одноразовый `token` (токен выдаёт backend, например через `GET /usersToken`):
-
-```text
-http://localhost:3000/?recipe_id=1&token=<token>
-```
-
-### 4) Запустить backend
-
-Frontend ожидает API по адресу:
+**Полный сценарий с backend** — поднимите [balance](https://github.com/Shfdis/balance) (API на `http://localhost:5000`) и откройте:
 
 ```text
-http://localhost:5000
+http://127.0.0.1:3000/?recipe_id=1&token=<token>
 ```
 
-Если backend доступен по другому адресу, обновите `APIUrl` в `src/App.js`.
+Токен выдаёт backend (`GET /usersToken` с `user_id` и `recipe_id`).  
+Если API на другом адресе — поменяйте `APIUrl` в `src/App.js`.
+
+> В монорепозитории [Shfdis/balance](https://github.com/Shfdis/balance) эта форма по-прежнему лежит в папке `frontend1` (порт `3001`) — так устроен Docker-деплой. Этот репозиторий — отдельная клиентская часть для портфолио.
 
 ---
 

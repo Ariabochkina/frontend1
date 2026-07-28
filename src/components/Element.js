@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { RiArrowDownDoubleLine } from "react-icons/ri";
 import { RiArrowDownSLine } from "react-icons/ri";
-import { IoMdCheckmark } from "react-icons/io";
 import { RiArrowUpSLine } from "react-icons/ri";
 import { RiArrowUpDoubleLine } from "react-icons/ri";
 import { BiCheckDouble } from "react-icons/bi";
@@ -10,7 +9,6 @@ export class Element extends Component {
     constructor(props) {
         super(props)
         this.state ={active: 0}
-        this.choose.bind(this)
     }
     choose(val) {
         this.props.choose(val)
