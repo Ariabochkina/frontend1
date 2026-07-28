@@ -1,70 +1,159 @@
-# Getting Started with Create React App
+# Frontend1 (Survey Form) for Balance
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Веб-форма для клиента в проекте **Balance**: короткий опрос после покупки, где гость оценивает, насколько усилить или ослабить вкусовые характеристики продукта.
 
-## Available Scripts
+Этот репозиторий — клиентская часть к backend-проекту `balance`. После заполнения формы backend автоматически подстраивает персональный рецепт пользователя под собранные предпочтения.
 
-In the project directory, you can run:
+Связанные репозитории проекта `Balance`:
+- backend: [Shfdis/balance](https://github.com/Shfdis/balance)
+- frontend (бизнес-панель): [Ariabochkina/frontend2](https://github.com/Ariabochkina/frontend2)
+- frontend (форма опроса, этот репозиторий): `frontend1`
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## О проекте Balance (контекст)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+**Balance** — сервис автоматической адаптации рецептов еды и напитков под вкусы конкретного гостя.
 
-### `npm test`
+Идея: после каждой покупки клиент проходит короткую форму по вкусовым шкалам (сладость, солёность, горечь и т.д.). Ответы интерпретируются как «градиент» предпочтений, и персональный рецепт сдвигается в нужную сторону — к следующему заказу вкус уже ближе к ожиданиям гостя.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+| | |
+| --- | --- |
+| **Этот клиент** | форма опроса гостя (`frontend1`) |
+| **Бизнес-панель** | редактор рецептов и коэффициентов (`frontend2`) |
+| **Сервер** | Flask API + БД (`balance`) |
+| **Порт формы** | `3001` (в составе общего деплоя Balance) |
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Что делает приложение
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Форма открывается по ссылке с параметрами `recipe_id` и `token`:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. загружает список вкусовых характеристик рецепта (`GET /tastes/<recipe_id>`);
+2. даёт гостю оценить каждый вкус по шкале от «сильно ослабить» до «сильно усилить»;
+3. отправляет ответы на backend (`POST /submit/<token>`), после чего токен аннулируется.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Как это стыкуется с backend
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```text
+Гость открывает ссылку
+  ?recipe_id=...&token=...
+        │
+        ▼
+┌─────────────────────┐
+│  frontend1 (форма)  │
+└──────────┬──────────┘
+           │ GET /tastes/<recipe_id>
+           │ POST /submit/<token>
+           ▼
+┌─────────────────────┐
+│  balance (Flask)    │  изменяет персональный рецепт
+└─────────────────────┘
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Формат тела `POST /submit/<token>`:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```json
+{
+  "sweetness": 0.05,
+  "bitterness": -0.1,
+  "acidity": 0
+}
+```
 
-## Learn More
+Каждый ключ — название вкуса, значение — коэффициент изменения от `-0.1` до `0.1`.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Моя зона ответственности в этом проекте
 
-### Code Splitting
+- разработка UI формы опроса на React;
+- декомпозиция на компоненты (`Header`, `Elements`, `Element`, `Button`);
+- визуальное оформление и состояния выбора по шкале;
+- интеграция с API backend (`/tastes`, `/submit`).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## Технологии
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- React (Create React App)
+- JavaScript (class components)
+- Fetch API
+- React Icons
+- CSS (Google Fonts — Montserrat)
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Структура проекта
 
-### Advanced Configuration
+```text
+src/
+├── App.js                 # загрузка вкусов, сбор ответов, submit
+├── index.js
+├── index.css              # тема и состояния кнопок
+└── components/
+    ├── Header.js          # бренд Balance
+    ├── Footer.js
+    ├── Elements.js        # список строк опроса
+    ├── Element.js         # одна вкусовая характеристика + шкала
+    └── Button.js          # кнопка варианта ответа
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## Шкала ответов
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+| UI | Значение | После `/ 20` | Смысл |
+| --- | --- | --- | --- |
+| ⇓⇓ | `-2` | `-0.1` | сильно ослабить |
+| ⇓ | `-1` | `-0.05` | ослабить |
+| ✓✓ | `0` | `0` | оставить как есть |
+| ⇑ | `1` | `0.05` | усилить |
+| ⇑⇑ | `2` | `0.1` | сильно усилить |
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Локальный запуск
+
+### 1) Установить зависимости
+
+```bash
+npm install
+```
+
+### 2) Запустить frontend
+
+```bash
+npm start
+```
+
+По умолчанию приложение откроется на `http://localhost:3000`.
+
+### 3) Открыть форму с параметрами
+
+Для работы нужны `recipe_id` и одноразовый `token` (токен выдаёт backend, например через `GET /usersToken`):
+
+```text
+http://localhost:3000/?recipe_id=1&token=<token>
+```
+
+### 4) Запустить backend
+
+Frontend ожидает API по адресу:
+
+```text
+http://localhost:5000
+```
+
+Если backend доступен по другому адресу, обновите `APIUrl` в `src/App.js`.
+
+---
+
+## Ссылки
+
+- Backend: [Shfdis/balance](https://github.com/Shfdis/balance)
+- Бизнес-панель: [Ariabochkina/frontend2](https://github.com/Ariabochkina/frontend2)
+- Демонстрация Balance: [Яндекс.Диск](https://disk.yandex.ru/i/mr6iN2WnrF1sFg)
